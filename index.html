@@ -2,8 +2,20 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Sistema Financeiro Pessoal</title>
+<title>Sistema Financeiro - PWA</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#667eea">
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<!-- PWA Meta Tags -->
+<meta name="theme-color" content="#667eea">
+<meta name="description" content="Sistema Financeiro Pessoal - Gerencie suas finanças">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Financeiro">
 
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -70,64 +82,112 @@ body {
   font-size: 12px;
 }
 
-/* TELA DE LOGIN */
-.login-container {
-  background: #fff;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-  width: 90%;
-  max-width: 400px;
-}
-
-.login-container h2 {
-  text-align: center;
-  color: #667eea;
-  margin-bottom: 30px;
-  font-size: 28px;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  color: #333;
-  font-weight: 600;
-}
-
-.form-group input {
+/* ==================== SPLASH SCREEN ==================== */
+.splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  padding: 12px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 14px;
-  transition: border-color 0.3s;
-}
-
-.form-group input:focus {
-  outline: none;
-  border-color: #667eea;
-}
-
-.btn-entrar {
-  width: 100%;
-  padding: 14px;
+  height: 100%;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeOut 0.5s ease-in-out 2.8s forwards;
 }
 
-.btn-entrar:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.splash-icon {
+  font-size: 120px;
+  animation: bounceIn 1s ease-out;
+  margin-bottom: 30px;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0) rotate(-180deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2) rotate(10deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.splash-title {
+  color: #fff;
+  font-size: 42px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  animation: slideInUp 0.8s ease-out 0.3s both;
+  text-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.splash-subtitle {
+  color: rgba(255,255,255,0.95);
+  font-size: 20px;
+  margin-bottom: 50px;
+  animation: slideInUp 0.8s ease-out 0.5s both;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.splash-loader {
+  width: 70px;
+  height: 70px;
+  border: 5px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite, slideInUp 0.8s ease-out 0.7s both;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.splash-progress {
+  margin-top: 40px;
+  width: 250px;
+  height: 6px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 3px;
+  overflow: hidden;
+  animation: slideInUp 0.8s ease-out 0.9s both;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.splash-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #fff 0%, rgba(255,255,255,0.8) 100%);
+  border-radius: 3px;
+  animation: progressBar 2.3s ease-in-out forwards;
+}
+
+@keyframes progressBar {
+  from { width: 0%; }
+  to { width: 100%; }
 }
 
 /* TELA PRINCIPAL */
@@ -140,6 +200,14 @@ body {
 
 .main-container.active {
   display: block;
+  animation: fadeInApp 0.8s ease-in-out 3s forwards;
+  opacity: 0;
+}
+
+@keyframes fadeInApp {
+  to {
+    opacity: 1;
+  }
 }
 
 .header {
@@ -821,35 +889,24 @@ body.dark-theme .budget-bar {
 </head>
 <body>
 
-<!-- TELA DE LOGIN -->
-<div class="login-container" id="loginContainer">
-  <h2>🔐 Sistema Financeiro</h2>
-  
-  <div class="form-group">
-    <label>Email</label>
-    <input type="email" id="loginEmail" placeholder="seu@email.com" value="admin@sistema.com">
+<!-- SPLASH SCREEN -->
+<div class="splash-screen" id="splashScreen">
+  <div class="splash-icon">💰</div>
+  <h1 class="splash-title">Sistema Financeiro</h1>
+  <p class="splash-subtitle">Gerencie suas finanças de forma inteligente</p>
+  <div class="splash-loader"></div>
+  <div class="splash-progress">
+    <div class="splash-progress-bar"></div>
   </div>
-  
-  <div class="form-group">
-    <label>Senha</label>
-    <input type="password" id="loginSenha" placeholder="Digite sua senha" value="123456">
-  </div>
-  
-  <button class="btn-entrar" onclick="fazerLogin()">Entrar</button>
-  
-  <p style="text-align: center; margin-top: 20px; color: #999; font-size: 12px;">
-    Usuário padrão: admin@sistema.com | Senha: 123456
-  </p>
 </div>
 
 <!-- TELA PRINCIPAL -->
-<div class="main-container" id="mainContainer">
+<div class="main-container active" id="mainContainer">
   <div class="header">
     <div class="header-content">
       <h1>💰 Sistema Financeiro</h1>
       <div class="user-info">
-        <div class="user-name" id="userName">Admin</div>
-        <button class="btn-sair" onclick="fazerLogout()">Sair</button>
+        <button class="btn-sair" onclick="exportarBackup()">💾 Backup</button>
       </div>
     </div>
   </div>
@@ -1281,7 +1338,7 @@ body.dark-theme .budget-bar {
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ==================== VARIÁVEIS GLOBAIS ====================
 let usuarioAtual = null;
 let financeiro = [];
@@ -1374,44 +1431,11 @@ async function carregarDoSheet() {
 }
 
 // ==================== AUTENTICAÇÃO ====================
-function fazerLogin() {
-  const email = document.getElementById('loginEmail').value;
-  const senha = document.getElementById('loginSenha').value;
-  
-  if (email === 'admin@sistema.com' && senha === '123456') {
-    usuarioAtual = { email: email, nome: 'Admin' };
-    localStorage.setItem('usuarioLogado', JSON.stringify(usuarioAtual));
-    
-    document.getElementById('loginContainer').style.display = 'none';
-    document.getElementById('mainContainer').classList.add('active');
-    document.getElementById('userName').textContent = usuarioAtual.nome;
-    
-    carregarDados();
-  } else {
-    alert('Email ou senha incorretos!');
-  }
-}
 
-function fazerLogout() {
-  localStorage.removeItem('usuarioLogado');
-  usuarioAtual = null;
-  
-  document.getElementById('mainContainer').classList.remove('active');
-  document.getElementById('loginContainer').style.display = 'block';
-  
-  fecharTodosModulos();
-}
 
-function verificarLogin() {
-  const usuarioSalvo = localStorage.getItem('usuarioLogado');
-  if (usuarioSalvo) {
-    usuarioAtual = JSON.parse(usuarioSalvo);
-    document.getElementById('loginContainer').style.display = 'none';
-    document.getElementById('mainContainer').classList.add('active');
-    document.getElementById('userName').textContent = usuarioAtual.nome;
-    carregarDados();
-  }
-}
+
+
+
 
 // ==================== MÓDULOS ====================
 function openModule(moduleName) {
@@ -2356,16 +2380,4 @@ function carregarTema() {
 }
 
 // ==================== INICIALIZAÇÃO ====================
-window.onload = function() {
-  verificarLogin();
-  carregarTema();
-};
-</script>
-
-<!-- BOTÃO DE ALTERNÂNCIA DE TEMA -->
-<button class="theme-toggle" onclick="toggleTheme()" id="themeToggle" title="Alternar tema">
-  🌙
-</button>
-
-</body>
-</html>
+window.onload = func
